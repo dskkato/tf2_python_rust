@@ -12,7 +12,6 @@ use tensorflow::SessionRunArgs;
 use tensorflow::Status;
 use tensorflow::Tensor;
 
-use image;
 use image::io::Reader as ImageReader;
 use image::GenericImageView;
 
@@ -21,13 +20,13 @@ use image::GenericImageView;
 static ALLOCATOR: std::alloc::System = std::alloc::System;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let filename = "examples/mnist/model.pb"; // z = x + y
+    let filename = "examples/mnist/model.pb";
     if !Path::new(filename).exists() {
         return Err(Box::new(
             Status::new_set(
                 Code::NotFound,
                 &format!(
-                    "Run 'python addition.py' to generate {} \
+                    "Run 'python examples/mnist/mnist.py' to generate {} \
                      and try again.",
                     filename
                 ),

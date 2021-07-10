@@ -33,7 +33,7 @@ model = tf.keras.models.Sequential(
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
 model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
-model.fit(x_train, y_train, epochs=5)
+model.fit(x_train, y_train, epochs=1)
 
 # convert output type through softmax so that it can be interpreted as probability
 probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])

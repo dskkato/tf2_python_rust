@@ -19,7 +19,9 @@ jobs:
         run: cargo fmt -- --check
       - name: Clippy
         run: cargo clippy --examples
-      - name: Run addition
+      - name: Run (addition)
         run: cargo run --example addition
-      - name: Run mnist
-        run: cargo test --example mnist
+      - name: Run (mnist)
+        run: cargo run --example mnist
+      - name: Run (regression_savedmodel)
+        run: cargo run --example regression_savedmodel

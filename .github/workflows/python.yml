@@ -1,0 +1,31 @@
+name: Python (train)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+        poetry-version: [1.0, 1.1.6]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install Dependencies
+        run: poetry install
+      - name: Run example (addition)
+        run: poetry run python examples/addition/addition.py
+      - name: Run example (mnist)
+        run: poetry run python examples/addition/mnist.py
+        

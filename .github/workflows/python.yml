@@ -28,3 +28,5 @@ jobs:
         run: poetry run python examples/addition/addition.py
       - name: Run example (mnist)
         run: poetry run python examples/mnist/mnist.py
+      - name: Run example (regression_savedmodel)
+        run: poetry run python examples/regression_savedmodel/regression_savedmodel.py

@@ -27,4 +27,4 @@ jobs:
       - name: Run example (addition)
         run: poetry run python examples/addition/addition.py
       - name: Run example (mnist)
-        run: poetry run python examples/addition/mnist.py
+        run: poetry run python examples/mnist/mnist.py

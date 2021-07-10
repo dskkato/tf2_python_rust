@@ -1,4 +1,3 @@
-use random::Source;
 use std::error::Error;
 use std::path::Path;
 use std::result::Result;

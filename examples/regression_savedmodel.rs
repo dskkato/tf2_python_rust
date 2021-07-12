@@ -10,10 +10,6 @@ use tensorflow::SessionRunArgs;
 use tensorflow::Status;
 use tensorflow::Tensor;
 
-#[cfg_attr(feature = "examples_system_alloc", global_allocator)]
-#[cfg(feature = "examples_system_alloc")]
-static ALLOCATOR: std::alloc::System = std::alloc::System;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let export_dir = "examples/regression_savedmodel"; // y = w * x + b
     if !Path::new(export_dir).exists() {

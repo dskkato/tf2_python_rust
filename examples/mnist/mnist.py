@@ -58,15 +58,9 @@ frozen_model_output = frozen_model(tf.convert_to_tensor(x_test[:1]))
 assert_array_equal(expected, tf_model_output)
 assert_array_equal(expected, frozen_model_output[0])
 
-# Remove `Identity` operation
-# # TODO Check whether the last identity operation is actualy required
-frozen_model_graph_def = frozen_model.graph.as_graph_def()
-optimized_graph_def = tf.Graph().as_graph_def()
-optimized_graph_def.node.extend(frozen_model_graph_def.node[:-1])
-
 # write the computation graph and weights
 directory = "examples/mnist"
-tf.io.write_graph(optimized_graph_def, directory, "model.pb", as_text=False)
+tf.io.write_graph(frozen_model.graph, directory, "model.pb", as_text=False)
 
 # dump expected values to compare Rust's outputs
 with open("examples/mnist/expected_values.txt", "w") as f:
@@ -77,4 +71,4 @@ with open("examples/mnist/expected_values.txt", "w") as f:
 logdir = "logs/mnist"
 writer = tf.summary.create_file_writer(logdir)
 with writer.as_default():
-    tf.summary.graph(optimized_graph_def)
+    tf.summary.graph(frozen_model.graph)

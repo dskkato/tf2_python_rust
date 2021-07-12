@@ -1,11 +1,6 @@
 # train mnist model
 # ref https://www.tensorflow.org/tutorials/quickstart/beginner
 import tensorflow as tf
-from tensorflow.python.framework.convert_to_constants import (
-    convert_variables_to_constants_v2,
-)
-import numpy as np
-from numpy.testing import assert_array_equal
 
 mnist = tf.keras.datasets.mnist
 
@@ -14,7 +9,7 @@ sample = x_test[0]  # keep first test item to verify Rust version later on
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 # explicitly constrain input type as float32
-x_train, x_test = x_train.astype(np.float32), x_test.astype(np.float32)
+x_train, x_test = x_train.astype("float32"), x_test.astype("float32")
 
 # dump the test item
 buf = tf.image.encode_png(sample[:, :, tf.newaxis])

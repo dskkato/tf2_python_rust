@@ -39,7 +39,7 @@ model.fit(x_train, y_train, epochs=1)
 @tf.function
 def probability_model(x):
     output = model(x)
-    probability = tf.keras.layers.Softmax(name="output")(x)
+    probability = tf.keras.layers.Softmax(name="output")(output)
     return probability
 
 

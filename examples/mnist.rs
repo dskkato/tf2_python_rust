@@ -15,10 +15,6 @@ use tensorflow::Tensor;
 use image::io::Reader as ImageReader;
 use image::GenericImageView;
 
-#[cfg_attr(feature = "examples_system_alloc", global_allocator)]
-#[cfg(feature = "examples_system_alloc")]
-static ALLOCATOR: std::alloc::System = std::alloc::System;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let filename = "examples/mnist/model.pb";
     if !Path::new(filename).exists() {
@@ -52,7 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Run the graph.
     let mut args = SessionRunArgs::new();
     args.add_feed(&graph.operation_by_name_required("x")?, 0, &x);
-    let output = args.request_fetch(&graph.operation_by_name_required("Identity")?, 0);
+    let output = args.request_fetch(&graph.operation_by_name_required("output/Softmax")?, 0);
     session.run(&mut args)?;
 
     // Check our results.

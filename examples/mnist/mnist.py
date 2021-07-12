@@ -36,11 +36,16 @@ model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
 model.fit(x_train, y_train, epochs=1)
 
 # convert output type through softmax so that it can be interpreted as probability
-probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+@tf.function
+def probability_model(x):
+    output = model(x)
+    probability = tf.keras.layers.Softmax(name="output")(x)
+    return probability
+
 
 # convert keras model to TF2 function to get a computation graph
 x = tf.TensorSpec((None, 28, 28), tf.float32)
-tf_model = tf.function(lambda x: probability_model(x)).get_concrete_function(x=x)
+tf_model = probability_model.get_concrete_function(x=x)
 
 # now all variables are converted to constants.
 # if this step is omitted, dumped graph does not include trained weights

@@ -31,23 +31,20 @@ model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
 model.fit(x_train, y_train, epochs=1)
 
 # convert output type through softmax so that it can be interpreted as probability
-probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-
-# convert keras model to TF2 function to get a computation graph
-x = tf.TensorSpec((None, 28, 28), tf.float32)
-predict = tf.function(lambda x: probability_model(x)).get_concrete_function(x=x)
+probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax(name="output")])
 
 # dump expected values to compare Rust's outputs
 with open("examples/mnist_savedmodel/expected_values.txt", "w") as f:
-    values = predict(x_test[:1, :, :]).numpy()
+    values = probability_model(x_test[:1, :, :])[0].numpy()
     print(*values, sep=", ", file=f)
 
 directory = "examples/mnist_savedmodel"
-signatures = {"predict": predict}
-tf.saved_model.save(model, directory, signatures=signatures)
+tf.saved_model.save(probability_model, directory)
 
 # export graph info to TensorBoard
 logdir = "logs/mnist_savedmodel"
 writer = tf.summary.create_file_writer(logdir)
+tf.summary.trace_on()
+values = probability_model(x_test[:1, :, :])
 with writer.as_default():
-    tf.summary.graph(predict.graph)
+    tf.summary.trace_export("Default", step=0)

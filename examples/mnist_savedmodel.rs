@@ -12,10 +12,6 @@ use tensorflow::Tensor;
 use image::io::Reader as ImageReader;
 use image::GenericImageView;
 
-#[cfg_attr(feature = "examples_system_alloc", global_allocator)]
-#[cfg(feature = "examples_system_alloc")]
-static ALLOCATOR: std::alloc::System = std::alloc::System;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let export_dir = "examples/mnist_savedmodel"; // y = w * x + b
     if !Path::new(export_dir).exists() {
@@ -43,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut graph = Graph::new();
     let session =
         SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?.session;
-    let op_x = graph.operation_by_name_required("predict_x")?;
+    let op_x = graph.operation_by_name_required("serving_default_sequential_input")?;
     let op_predict = graph.operation_by_name_required("StatefulPartitionedCall")?;
 
     // Train the model (e.g. for fine tuning).

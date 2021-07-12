@@ -50,3 +50,9 @@ with open("examples/mnist_savedmodel/expected_values.txt", "w") as f:
 directory = "examples/mnist_savedmodel"
 signatures = {"predict": predict}
 tf.saved_model.save(model, directory, signatures=signatures)
+
+# export graph info to TensorBoard
+logdir = "logs/mnist_savedmodel"
+writer = tf.summary.create_file_writer(logdir)
+with writer.as_default():
+    tf.summary.graph(predict.graph)

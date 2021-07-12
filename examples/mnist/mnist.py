@@ -61,3 +61,9 @@ tf.io.write_graph(frozen_model.graph, directory, "model.pb", as_text=False)
 with open("examples/mnist/expected_values.txt", "w") as f:
     values = expected.numpy()[0]
     print(*values, sep=", ", file=f)
+
+# export graph info to TensorBoard
+logdir = "logs/mnist"
+writer = tf.summary.create_file_writer(logdir)
+with writer.as_default():
+    tf.summary.graph(frozen_model.graph)

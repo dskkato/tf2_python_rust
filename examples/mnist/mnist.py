@@ -44,7 +44,7 @@ def probability_model(x):
 
 
 # convert keras model to TF2 function to get a computation graph
-x = tf.TensorSpec((None, 28, 28), tf.float32)
+x = tf.TensorSpec((None, 28, 28), tf.float32, name="x")
 tf_model = probability_model.get_concrete_function(x=x)
 
 # now all variables are converted to constants.

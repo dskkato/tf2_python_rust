@@ -12,10 +12,6 @@ use tensorflow::SessionRunArgs;
 use tensorflow::Status;
 use tensorflow::Tensor;
 
-#[cfg_attr(feature = "examples_system_alloc", global_allocator)]
-#[cfg(feature = "examples_system_alloc")]
-static ALLOCATOR: std::alloc::System = std::alloc::System;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let filename = "examples/addition/model.pb"; // z = x + y
     if !Path::new(filename).exists() {
@@ -49,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut args = SessionRunArgs::new();
     args.add_feed(&graph.operation_by_name_required("x")?, 0, &x);
     args.add_feed(&graph.operation_by_name_required("y")?, 0, &y);
-    let z = args.request_fetch(&graph.operation_by_name_required("Identity")?, 0);
+    let z = args.request_fetch(&graph.operation_by_name_required("z")?, 0);
     session.run(&mut args)?;
 
     // Check our results.

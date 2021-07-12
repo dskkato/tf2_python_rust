@@ -12,7 +12,6 @@ def add(x, y):
 
 x = tf.TensorSpec((), dtype=tf.dtypes.int32, name="x")
 y = tf.TensorSpec((), dtype=tf.dtypes.int32, name="y")
-
 concrete_function = add.get_concrete_function(x, y)
 directory = "examples/addition"
 tf.io.write_graph(concrete_function.graph, directory, "model.pb", as_text=False)
@@ -20,3 +19,8 @@ tf.io.write_graph(concrete_function.graph, directory, "model.pb", as_text=False)
 # check inputs/outputs node names to refer from Rust later on
 print(f"input nodes  : {concrete_function.inputs}")
 print(f"output nodes : {concrete_function.outputs}")
+
+logdir = "logs/addition"
+writer = tf.summary.create_file_writer(logdir)
+with writer.as_default():
+    tf.summary.graph(concrete_function.graph)

@@ -6,3 +6,5 @@ Cargo.lock
 poetry.lock
 /.venv
 /venv
+
+/logs

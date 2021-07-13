@@ -31,7 +31,11 @@ model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
 model.fit(x_train, y_train, epochs=1)
 
 # convert output type through softmax so that it can be interpreted as probability
-probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax(name="output")])
+inputs = tf.keras.Input((28, 28), name="input", dtype=tf.float32)
+x = model(inputs)
+outputs = tf.keras.layers.Softmax(name="output")(x)
+
+probability_model = tf.keras.Model(inputs=inputs, outputs=outputs)
 
 # dump expected values to compare Rust's outputs
 with open("examples/mnist_savedmodel/expected_values.txt", "w") as f:
@@ -45,6 +49,6 @@ tf.saved_model.save(probability_model, directory)
 logdir = "logs/mnist_savedmodel"
 writer = tf.summary.create_file_writer(logdir)
 tf.summary.trace_on()
-values = probability_model(x_test[:1, :, :])
+values = probability_model.predict(x_test[:1, :, :])
 with writer.as_default():
     tf.summary.trace_export("Default", step=0)

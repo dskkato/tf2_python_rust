@@ -37,10 +37,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Load the saved model exported by regression_savedmodel.py.
     let mut graph = Graph::new();
-    let session =
-        SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?.session;
-    let op_x = graph.operation_by_name_required("serving_default_sequential_input")?;
-    let op_predict = graph.operation_by_name_required("StatefulPartitionedCall")?;
+    let bundle =
+        SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?;
+    let session = &bundle.session;
+
+    let signature = bundle.meta_graph_def().get_signature("serving_default")?;
+    let input_info = signature.get_input("input")?;
+    let op_x = graph.operation_by_name_required(&input_info.name().name)?;
+    let output_info = signature.get_output("output")?;
+    let op_predict = graph.operation_by_name_required(&output_info.name().name)?;
 
     // Train the model (e.g. for fine tuning).
     let mut args = SessionRunArgs::new();

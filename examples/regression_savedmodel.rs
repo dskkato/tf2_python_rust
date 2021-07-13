@@ -41,19 +41,33 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Load the saved model exported by regression_savedmodel.py.
     let mut graph = Graph::new();
-    let session =
-        SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?.session;
-    let op_x = graph.operation_by_name_required("train_x")?;
-    let op_y = graph.operation_by_name_required("train_y")?;
-    let op_train = graph.operation_by_name_required("StatefulPartitionedCall")?;
-    let op_w = graph.operation_by_name_required("StatefulPartitionedCall_1")?;
-    let op_b = graph.operation_by_name_required("StatefulPartitionedCall_1")?;
+    let bundle =
+        SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?;
+    let session = &bundle.session;
+
+    let train_signature = bundle.meta_graph_def().get_signature("train")?;
+    let x_info = train_signature.get_input("x")?;
+    let y_info = train_signature.get_input("y")?;
+    let train_info = train_signature.get_output("train")?;
+    let op_x = graph.operation_by_name_required(&x_info.name().name)?;
+    let op_y = graph.operation_by_name_required(&y_info.name().name)?;
+    let op_train = graph.operation_by_name_required(&train_info.name().name)?;
+    let w_info = bundle
+        .meta_graph_def()
+        .get_signature("w")?
+        .get_output("output")?;
+    let op_w = graph.operation_by_name_required(&w_info.name().name)?;
+    let b_info = bundle
+        .meta_graph_def()
+        .get_signature("b")?
+        .get_output("output")?;
+    let op_b = graph.operation_by_name_required(&b_info.name().name)?;
 
     // Train the model (e.g. for fine tuning).
     let mut train_step = SessionRunArgs::new();
     train_step.add_feed(&op_x, 0, &x);
     train_step.add_feed(&op_y, 0, &y);
-    train_step.request_fetch(&op_train, 0);
+    train_step.add_target(&op_train);
     for _ in 0..steps {
         session.run(&mut train_step)?;
     }
@@ -61,7 +75,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Grab the data out of the session.
     let mut output_step = SessionRunArgs::new();
     let w_ix = output_step.request_fetch(&op_w, 0);
-    let b_ix = output_step.request_fetch(&op_b, 1);
+    let b_ix = output_step.request_fetch(&op_b, 0);
     session.run(&mut output_step)?;
 
     // Check our results.

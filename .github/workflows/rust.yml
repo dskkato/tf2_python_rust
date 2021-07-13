@@ -27,3 +27,5 @@ jobs:
         run: cargo run --example regression_savedmodel
       - name: Run (mnist_savedmodel)
         run: cargo run --example mnist_savedmodel
+      - name: Run (zenn)
+        run: cargo run --example zenn

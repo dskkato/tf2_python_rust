@@ -32,3 +32,5 @@ jobs:
         run: poetry run python examples/regression_savedmodel/regression_savedmodel.py
       - name: Run example (mnist_savedmodel)
         run: poetry run python examples/mnist_savedmodel/mnist_savedmodel.py
+      - name: Run example (zenn)
+        run: poetry run python examples/zenn/zenn.py

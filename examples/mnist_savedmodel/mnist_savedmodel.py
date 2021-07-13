@@ -49,6 +49,6 @@ tf.saved_model.save(probability_model, directory)
 logdir = "logs/mnist_savedmodel"
 writer = tf.summary.create_file_writer(logdir)
 tf.summary.trace_on()
-values = probability_model(x_test[:1, :, :])
+values = probability_model.predict(x_test[:1, :, :])
 with writer.as_default():
     tf.summary.trace_export("Default", step=0)

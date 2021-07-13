@@ -14,8 +14,12 @@ class LinearRegresstion(tf.Module):
         return y_hat
 
     @tf.function
-    def get_weights(self):
-        return self.w, self.b
+    def get_w(self):
+        return {"output": self.w}
+
+    @tf.function
+    def get_b(self):
+        return {"output": self.b}
 
     @tf.function
     def train(self, x, y):
@@ -23,10 +27,8 @@ class LinearRegresstion(tf.Module):
             y_hat = self(x)
             loss = tf.reduce_mean(tf.square(y_hat - y))
         grads = tape.gradient(loss, self.trainable_variables)
-        _ = self.optimizer.apply_gradients(
-            zip(grads, self.trainable_variables), name="train"
-        )
-        return loss
+        _ = self.optimizer.apply_gradients(zip(grads, self.trainable_variables))
+        return {"train": loss}
 
 
 model = LinearRegresstion()
@@ -34,10 +36,11 @@ model = LinearRegresstion()
 x = tf.TensorSpec([None], tf.float32, name="x")
 y = tf.TensorSpec([None], tf.float32, name="y")
 train = model.train.get_concrete_function(x, y)
-weights = model.get_weights.get_concrete_function()
+w = model.get_w.get_concrete_function()
+b = model.get_b.get_concrete_function()
 
 directory = "examples/regression_savedmodel"
-signatures = {"train": train, "weights": weights}
+signatures = {"train": train, "w": w, "b": b}
 tf.saved_model.save(model, directory, signatures=signatures)
 
 # export graph info to TensorBoard
@@ -45,4 +48,5 @@ logdir = "logs/regression_savedmodel"
 writer = tf.summary.create_file_writer(logdir)
 with writer.as_default():
     tf.summary.graph(train.graph)
-    tf.summary.graph(weights.graph)
+    tf.summary.graph(w.graph)
+    tf.summary.graph(b.graph)

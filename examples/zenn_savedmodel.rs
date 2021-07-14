@@ -57,11 +57,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Run the graph.
     let mut args = SessionRunArgs::new();
     args.add_feed(op_x, 0, &x);
-    let output = args.request_fetch(op_output, 0);
+    let token_output = args.request_fetch(op_output, 0);
     session.run(&mut args)?;
 
     // Check our results.
-    let output: Tensor<f32> = args.fetch(output)?;
+    let output: Tensor<f32> = args.fetch(token_output)?;
     let res: ndarray::Array<f32, _> = output.into();
     println!("{:?}", res);
 

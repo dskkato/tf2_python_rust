@@ -8,6 +8,7 @@ use tensorflow::SessionOptions;
 use tensorflow::SessionRunArgs;
 use tensorflow::Status;
 use tensorflow::Tensor;
+use tensorflow::DEFAULT_SERVING_SIGNATURE_DEF_KEY;
 
 use image::io::Reader as ImageReader;
 use image::GenericImageView;
@@ -41,7 +42,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?;
     let session = &bundle.session;
 
-    let signature = bundle.meta_graph_def().get_signature("serving_default")?;
+    let signature = bundle
+        .meta_graph_def()
+        .get_signature(DEFAULT_SERVING_SIGNATURE_DEF_KEY)?;
     let input_info = signature.get_input("input")?;
     let op_x = graph.operation_by_name_required(&input_info.name().name)?;
     let output_info = signature.get_output("output")?;

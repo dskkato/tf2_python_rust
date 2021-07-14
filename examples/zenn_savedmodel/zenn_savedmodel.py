@@ -5,4 +5,3 @@ model = tf.keras.applications.MobileNetV3Large()
 
 directory = "examples/zenn_savedmodel"
 model.save(directory)
-

@@ -46,6 +46,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         SavedModelBundle::load(&SessionOptions::new(), &["serve"], &mut graph, export_dir)?;
     let session = &bundle.session;
 
+    // get in/out operations
     let signature = bundle
         .meta_graph_def()
         .get_signature(DEFAULT_SERVING_SIGNATURE_DEF_KEY)?;

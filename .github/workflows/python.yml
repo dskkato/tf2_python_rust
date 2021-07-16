@@ -30,6 +30,8 @@ jobs:
         run: poetry run python examples/mnist/mnist.py
       - name: Run example (regression_savedmodel)
         run: poetry run python examples/regression_savedmodel/regression_savedmodel.py
+      - name: Run example (regression_checkpoint)
+        run: poetry run python examples/regression_checkpoint/regression_checkpoint.py
       - name: Run example (mnist_savedmodel)
         run: poetry run python examples/mnist_savedmodel/mnist_savedmodel.py
       - name: Run example (zenn)

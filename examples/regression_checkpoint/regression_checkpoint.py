@@ -26,4 +26,4 @@ tf.train.write_graph(graph, directory, "model.pb", as_text=False)
 logdir = "logs/regression_checkpoint"
 writer = tensorflow.summary.create_file_writer(logdir)
 with writer.as_default():
-    tf.summary.graph(graph)
+    tensorflow.summary.graph(graph)

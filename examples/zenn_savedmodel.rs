@@ -16,7 +16,7 @@ use image::io::Reader as ImageReader;
 use image::GenericImageView;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let export_dir = "examples/zenn_savedmodel"; // y = w * x + b
+    let export_dir = "examples/zenn_savedmodel";
     if !Path::new(export_dir).exists() {
         return Err(Box::new(
             Status::new_set(

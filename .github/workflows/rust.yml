@@ -25,6 +25,8 @@ jobs:
         run: cargo run --example mnist
       - name: Run (regression_savedmodel)
         run: cargo run --example regression_savedmodel
+      - name: Run (regression_checkpoint)
+        run: cargo run --example regression_checkpoint
       - name: Run (mnist_savedmodel)
         run: cargo run --example mnist_savedmodel
       - name: Run (zenn)
